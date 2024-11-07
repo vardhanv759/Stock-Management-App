@@ -8,11 +8,18 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 import matplotlib.pyplot as plt  # Importing matplotlib for plotting
 
-# Google Sheets API setup
+# Load credentials directly from Streamlit secrets
+creds_dict = st.secrets["gcp_service_account"]  # This retrieves the GCP credentials dictionary
+
+# Define the scope for accessing Google Sheets and Google Drive
 scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
-creds = ServiceAccountCredentials.from_json_keyfile_name('stock-management-441000-b09dc6a7c5cd.json', scope)
+
+# Use the credentials from Streamlit secrets
+creds = ServiceAccountCredentials.from_json_keyfile_dict(creds_dict, scope)
+
+# Authorize and open the Google Sheets
 client = gspread.authorize(creds)
-sheet = client.open("Stock-Records").sheet1  # Replace with your Google Sheet name
+sheet = client.open("Stock-Records").sheet1  # Replace with your sheet name
 
 # Function to fetch data from Google Sheets
 def fetch_data():
